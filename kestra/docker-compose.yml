@@ -4,6 +4,8 @@ volumes:
     driver: local
   kestra-data:
     driver: local
+  pgadmin-data:
+    driver: local
 
 services:
   postgres:
@@ -64,27 +66,27 @@ services:
       postgres:
         condition: service_started
 
-
   pgdatabase:
+    container_name: polish-flats-db
     image: postgres
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=ny_taxi
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: polish_flat
     volumes:
-      - "./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"
+      - ./kestra/polish_flat_postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 
-
   pgadmin:
+    container_name: pgadmin
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=root
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
     volumes:
-      - "./data_pgadmin:/var/lib/pgadmin"
+      - pgadmin-data:/var/lib/pgadmin
     ports:
       - "8090:80"
     depends_on:
-      - postgres
+      - pgdatabase
