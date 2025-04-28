@@ -1,6 +1,11 @@
 ## Overview
 This project explores Poland's real estate market, focusing on rental and sales data across cities. The goal is to identify trends, such as price changes and market activity, using an interactive Streamlit dashboard for analysis and visualization.  
 Tools & Technologies
+
+## Accessible via
+https://polish-flats-ps.streamlit.app/
+![img.png](img.png)
+
 ### 1. Docker Compose & PostgreSQL
    Purpose: Set up a local database to store and manage real estate data.
    Command:
