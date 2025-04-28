@@ -1,13 +1,22 @@
-default:
+# default:
+#   target: dev
+#   outputs:
+#     dev:
+#       type: postgres
+#       host: localhost
+#       user: root
+#       password: root
+#       port: 5433
+#       dbname: polish_flat
+#       schema: public
+#       threads: 8
+#       priority: interactive
+polish_flats_project:
   target: dev
   outputs:
     dev:
-      type: postgres
-      host: localhost
-      user: root
-      password: root
-      port: 5433
-      dbname: polish_flat
-      schema: public
-      threads: 8
-      priority: interactive
+      type: bigquery
+      method: service-account
+      project: hazel-aquifer-458214-c4
+      dataset: polish_flats_data
+      threads: 1

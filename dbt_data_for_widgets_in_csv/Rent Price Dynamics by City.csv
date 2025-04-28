@@ -1,0 +1,16 @@
+city,median_price_2022,median_price_2024,median_price_change,percentile_95_price_2022,percentile_95_price_2024,percentile_95_price_change
+bialystok,2150,2400,+,2700,2500,_
+bydgoszcz,2200,2500,+,4200,4300,+
+czestochowa,2400,,0,3000,,0
+gdansk,3000,2600,_,5300,4200,_
+gdynia,3500,3400,_,6900,4900,_
+katowice,2900,2500,_,6000,4700,_
+krakow,3000,3000,0,5500,5100,_
+lodz,2300,2100,_,3500,3021,_
+lublin,2400,2000,_,3100,3400,+
+poznan,2700,2500,_,5000,5000,0
+radom,2700,,0,3000,,0
+rzeszow,2500,2200,_,3400,2500,_
+szczecin,2700,2500,_,4000,2800,_
+warszawa,4000,3600,_,9100,9000,_
+wroclaw,3100,3300,+,6500,5000,_
