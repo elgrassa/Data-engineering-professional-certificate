@@ -1,8 +1,16 @@
+# version: 2
+# sources:
+#   - name: polish_flats
+#     database: polish_flat
+#     schema: public
+#     tables:
+#       - name: apartments_sale
+#       - name: apartments_rent
 version: 2
 sources:
   - name: polish_flats
-    database: polish_flat
-    schema: public
+    database: hazel-aquifer-458214-c4
+    schema: 'public'
     tables:
       - name: apartments_sale
       - name: apartments_rent
