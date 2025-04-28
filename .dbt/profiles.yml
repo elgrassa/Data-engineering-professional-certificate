@@ -3,11 +3,11 @@ default:
   outputs:
     dev:
       type: postgres
-      host: 'pgdatabase'
-      user: 'root'
-      password: 'root'
-      port: 5432
-      dbname: 'polish_flat'
-      schema: 'public'
+      host: localhost
+      user: root
+      password: root
+      port: 5433
+      dbname: polish_flat
+      schema: public
       threads: 8
       priority: interactive

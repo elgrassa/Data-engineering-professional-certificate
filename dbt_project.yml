@@ -2,20 +2,8 @@ name: 'polish_flats_dbt'
 version: '1.0'
 config-version: 2
 
-profile: 'default'
+profile: 'default'  # This tells dbt to use the profile from profiles.yml
 
 # This specifies the directory where DBT will look for models.
 model-paths:
   - models
-
-targets:
-  dev:
-    type: postgres
-    host: 'pgdatabase'
-    user: 'root'
-    password: 'root'
-    port: 5432
-    dbname: 'polish_flat'
-    schema: 'public'
-    threads: 8
-    priority: interactive
