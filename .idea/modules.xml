@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Data-engineering-professional-certificate.iml" filepath="$PROJECT_DIR$/.idea/Data-engineering-professional-certificate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flows.iml" filepath="$PROJECT_DIR$/flows.iml" />
     </modules>
   </component>
 </project>

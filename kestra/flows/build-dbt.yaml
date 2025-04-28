@@ -1,0 +1,44 @@
+id: build-dbt
+namespace: flats.project
+
+inputs:
+  - id: dbt_command
+    type: SELECT
+    allowCustomValue: true
+    defaults: dbt build
+    values:
+      - dbt build
+      - dbt debug
+
+tasks:
+  - id: dbt-build
+    type: io.kestra.plugin.dbt.cli.DbtCLI
+    env:
+      DBT_DATABASE: polish_flat
+      DBT_SCHEMA: public
+    namespaceFiles:
+      enabled: true
+    containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+    commands:
+      - dbt deps
+      - "{{ inputs.dbt_command }}"
+    storeManifest:
+      key: manifest.json
+      namespace: "{{ flow.namespace }}"
+    profiles: |
+      default:
+        outputs:
+          dev:
+            type: postgres
+            host: host.docker.internal  # Docker networking for local connection
+            user: root  # Username for PostgreSQL as defined in Docker Compose
+            password: root  # Password for PostgreSQL as defined in Docker Compose
+            port: 5433  # Port exposed for PostgreSQL in Docker Compose
+            dbname: polish_flat  # Database name as per Docker Compose
+            schema: public  # Schema name where the tables reside
+            threads: 8
+            connect_timeout: 10
+            priority: interactive
+        target: dev
