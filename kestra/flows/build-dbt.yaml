@@ -16,6 +16,7 @@ tasks:
     env:
       DBT_DATABASE: polish_flat
       DBT_SCHEMA: public
+      DBT_PROFILES_DIR: /Users/pavloskorodziievskyi/IdeaProjects/Data-engineering-professional-certificate/.dbt
     namespaceFiles:
       enabled: true
     containerImage: ghcr.io/kestra-io/dbt-postgres:latest
@@ -32,12 +33,12 @@ tasks:
         outputs:
           dev:
             type: postgres
-            host: host.docker.internal  # Docker networking for local connection
-            user: root  # Username for PostgreSQL as defined in Docker Compose
-            password: root  # Password for PostgreSQL as defined in Docker Compose
-            port: 5433  # Port exposed for PostgreSQL in Docker Compose
-            dbname: polish_flat  # Database name as per Docker Compose
-            schema: public  # Schema name where the tables reside
+            host: host.docker.internal
+            user: root
+            password: root
+            port: 5433
+            dbname: polish_flat
+            schema: public
             threads: 8
             connect_timeout: 10
             priority: interactive
