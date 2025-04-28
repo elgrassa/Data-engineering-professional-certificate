@@ -19,4 +19,4 @@ polish_flats_project:
       method: service-account
       project: hazel-aquifer-458214-c4
       dataset: polish_flats_data
-      threads: 6
+      threads: 1
