@@ -1,0 +1,8 @@
+version: 2
+sources:
+  - name: polish_flats
+    database: polish_flat
+    schema: public
+    tables:
+      - name: apartments_sale
+      - name: apartments_rent
