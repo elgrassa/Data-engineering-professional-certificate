@@ -225,7 +225,16 @@ tasks:
       FROM {{ render(vars.staging_table_name) }}
       ON CONFLICT (id) DO NOTHING;
 
-
+  - id: count_rows_in_final
+    type: io.kestra.plugin.jdbc.postgresql.Queries
+    description: "Count rows in final table after import"
+    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+    username: root
+    password: root
+    fetchType: FETCH
+    sql: |
+      SELECT COUNT(*) AS total_rows
+      FROM {{ render(vars.table_name) }};
 
 # Optional triggers to run automatically every month
 # triggers:
