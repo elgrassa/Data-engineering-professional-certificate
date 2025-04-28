@@ -145,17 +145,87 @@ tasks:
         GROUP BY id
       );
 
-# Optional: merge into final table if you want!
-#  - id: merge_to_final_table
-#    type: io.kestra.plugin.jdbc.postgresql.Queries
-#    description: "Insert new records into final table"
-#    url: jdbc:postgresql://pgdatabase:5432/polish_flat
-#    username: root
-#    password: root
-#    sql: |
-#      INSERT INTO {{ render(vars.table_name) }}
-#      SELECT * FROM {{ render(vars.staging_table_name) }}
-#      ON CONFLICT (id) DO NOTHING;
+  - id: add_unique_id
+    type: io.kestra.plugin.jdbc.postgresql.Queries
+    description: "Add unique_row_id based on id, city, type, squareMeters"
+    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+    username: root
+    password: root
+    sql: |
+      ALTER TABLE {{ render(vars.staging_table_name) }}
+      ADD COLUMN IF NOT EXISTS unique_row_id TEXT;
+
+      UPDATE {{ render(vars.staging_table_name) }}
+      SET unique_row_id = md5(
+        COALESCE(id, '') ||
+        COALESCE(city, '') ||
+        COALESCE(type, '') ||
+        COALESCE(CAST(squareMeters AS text), '')
+      )
+      WHERE unique_row_id IS NULL;
+  - id: create_final_table_if_not_exists
+    type: io.kestra.plugin.jdbc.postgresql.Queries
+    description: "Ensure the final table exists before merging"
+    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+    username: root
+    password: root
+    sql: |
+      CREATE TABLE IF NOT EXISTS {{ render(vars.table_name) }} (
+        id TEXT PRIMARY KEY,
+        city TEXT,
+        type TEXT,
+        squareMeters DOUBLE PRECISION,
+        rooms DOUBLE PRECISION,
+        floor DOUBLE PRECISION,
+        floorCount DOUBLE PRECISION,
+        buildYear DOUBLE PRECISION,
+        latitude DOUBLE PRECISION,
+        longitude DOUBLE PRECISION,
+        centreDistance DOUBLE PRECISION,
+        poiCount DOUBLE PRECISION,
+        schoolDistance DOUBLE PRECISION,
+        clinicDistance DOUBLE PRECISION,
+        postOfficeDistance DOUBLE PRECISION,
+        kindergartenDistance DOUBLE PRECISION,
+        restaurantDistance DOUBLE PRECISION,
+        collegeDistance DOUBLE PRECISION,
+        pharmacyDistance DOUBLE PRECISION,
+        ownership TEXT,
+        buildingMaterial TEXT,
+        condition TEXT,
+        hasParkingSpace TEXT,
+        hasBalcony TEXT,
+        hasElevator TEXT,
+        hasSecurity TEXT,
+        hasStorageRoom TEXT,
+        price INTEGER,
+        unique_row_id TEXT
+      );
+
+  - id: merge_to_final_table
+    type: io.kestra.plugin.jdbc.postgresql.Queries
+    description: "Insert deduplicated records into final table"
+    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+    username: root
+    password: root
+    sql: |
+      INSERT INTO {{ render(vars.table_name) }} (
+        id, city, type, squareMeters, rooms, floor, floorCount, buildYear,
+        latitude, longitude, centreDistance, poiCount, schoolDistance,
+        clinicDistance, postOfficeDistance, kindergartenDistance, restaurantDistance,
+        collegeDistance, pharmacyDistance, ownership, buildingMaterial, condition,
+        hasParkingSpace, hasBalcony, hasElevator, hasSecurity, hasStorageRoom, price, unique_row_id
+      )
+      SELECT
+        id, city, type, squareMeters, rooms, floor, floorCount, buildYear,
+        latitude, longitude, centreDistance, poiCount, schoolDistance,
+        clinicDistance, postOfficeDistance, kindergartenDistance, restaurantDistance,
+        collegeDistance, pharmacyDistance, ownership, buildingMaterial, condition,
+        hasParkingSpace, hasBalcony, hasElevator, hasSecurity, hasStorageRoom, price, unique_row_id
+      FROM {{ render(vars.staging_table_name) }}
+      ON CONFLICT (id) DO NOTHING;
+
+
 
 # Optional triggers to run automatically every month
 # triggers:
