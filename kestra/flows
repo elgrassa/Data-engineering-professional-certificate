@@ -1,0 +1,155 @@
+id: polish_flats_unified_loader
+namespace: flats.project
+
+description: |
+  Monthly loader for Polish apartment data (rent/sale) from GitHub.
+  Triggered manually or via schedule with year, month, and data type as input.
+
+inputs:
+  - id: year
+    type: STRING
+    displayName: Year of the data
+    defaults: "2023"
+  - id: month
+    type: STRING
+    displayName: Month of the data (MM)
+    defaults: "11"
+  - id: data_type
+    type: SELECT
+    displayName: Select data type (rent or sale)
+    values: [rent, sale]
+    defaults: sale
+
+variables:
+  filename_prefix: "{% if inputs.data_type == 'rent' %}apartments_rent_pl{% else %}apartments_pl{% endif %}"
+  filename: "{{ vars.filename_prefix }}_{{ inputs.year }}_{{ inputs.month }}.csv"
+  table_name: "{% if inputs.data_type == 'rent' %}public.apartments_rent{% else %}public.apartments_sale{% endif %}"
+  staging_table_name: "{{ vars.table_name }}_staging"
+  data_url: "https://raw.githubusercontent.com/elgrassa/Data-engineering-professional-certificate/main/kestra/csv/{{render(vars.filename)}}"
+  common_columns: "[id,city,type,squareMeters,rooms,floor,floorCount,buildYear,latitude,longitude,centreDistance,poiCount,schoolDistance,clinicDistance,postOfficeDistance,kindergartenDistance,restaurantDistance,collegeDistance,pharmacyDistance,ownership,buildingMaterial,condition,hasParkingSpace,hasBalcony,hasElevator,hasSecurity,hasStorageRoom,price]"
+
+
+tasks:
+  - id: set_label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      file: "{{ vars.filename }}"
+      type: "{{ inputs.data_type }}"
+      year: "{{ inputs.year }}"
+      month: "{{ inputs.month }}"
+
+  - id: download_csv
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "{{ render(vars.filename) }}"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - >
+        echo "Downloading file {{ render(vars.filename) }} from {{ render(vars.data_url) }}" &&
+        wget -q -O "{{ render(vars.filename) }}" "{{ render(vars.data_url) }}"
+
+  - id: create_staging_table
+    type: io.kestra.plugin.jdbc.postgresql.Queries
+    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+    username: root
+    password: root
+    sql: |
+      CREATE TABLE IF NOT EXISTS {{ vars.staging_table_name }} (
+        id TEXT,
+        city TEXT,
+        type TEXT,
+        squareMeters DOUBLE PRECISION,
+        rooms DOUBLE PRECISION,
+        floor DOUBLE PRECISION,
+        floorCount DOUBLE PRECISION,
+        buildYear DOUBLE PRECISION,
+        latitude DOUBLE PRECISION,
+        longitude DOUBLE PRECISION,
+        centreDistance DOUBLE PRECISION,
+        poiCount DOUBLE PRECISION,
+        schoolDistance DOUBLE PRECISION,
+        clinicDistance DOUBLE PRECISION,
+        postOfficeDistance DOUBLE PRECISION,
+        kindergartenDistance DOUBLE PRECISION,
+        restaurantDistance DOUBLE PRECISION,
+        collegeDistance DOUBLE PRECISION,
+        pharmacyDistance DOUBLE PRECISION,
+        ownership TEXT,
+        buildingMaterial TEXT,
+        condition TEXT,
+        hasParkingSpace TEXT,
+        hasBalcony TEXT,
+        hasElevator TEXT,
+        hasSecurity TEXT,
+        hasStorageRoom TEXT,
+        price INTEGER
+      );
+      TRUNCATE TABLE {{ vars.staging_table_name }};
+
+  - id: copy_to_staging
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+    username: root
+    password: root
+    format: CSV
+    from: "{{ outputs.download_csv.outputFiles[0] }}"   # <-- point to first matched file
+    table: "{{ vars.staging_table_name }}"
+    header: true
+    columns: "{{ vars.common_columns }}"
+
+# Uncomment later if you want automatic merge from staging → final table
+#  - id: merge_data
+#    type: io.kestra.plugin.jdbc.postgresql.Queries
+#    url: jdbc:postgresql://pgdatabase:5432/polish_flat
+#    username: root
+#    password: root
+#    sql: |
+#      CREATE TABLE IF NOT EXISTS {{ vars.table_name }} (
+#        id TEXT PRIMARY KEY,
+#        city TEXT,
+#        type TEXT,
+#        squareMeters DOUBLE PRECISION,
+#        rooms DOUBLE PRECISION,
+#        floor DOUBLE PRECISION,
+#        floorCount DOUBLE PRECISION,
+#        buildYear DOUBLE PRECISION,
+#        latitude DOUBLE PRECISION,
+#        longitude DOUBLE PRECISION,
+#        centreDistance DOUBLE PRECISION,
+#        poiCount DOUBLE PRECISION,
+#        schoolDistance DOUBLE PRECISION,
+#        clinicDistance DOUBLE PRECISION,
+#        postOfficeDistance DOUBLE PRECISION,
+#        kindergartenDistance DOUBLE PRECISION,
+#        restaurantDistance DOUBLE PRECISION,
+#        collegeDistance DOUBLE PRECISION,
+#        pharmacyDistance DOUBLE PRECISION,
+#        ownership TEXT,
+#        buildingMaterial TEXT,
+#        condition TEXT,
+#        hasParkingSpace TEXT,
+#        hasBalcony TEXT,
+#        hasElevator TEXT,
+#        hasSecurity TEXT,
+#        hasStorageRoom TEXT,
+#        price INTEGER
+#      );
+#
+#      INSERT INTO {{ vars.table_name }}
+#      SELECT s.*
+#      FROM {{ vars.staging_table_name }} s
+#      ON CONFLICT (id) DO NOTHING;
+
+# Optional triggers (scheduled monthly)
+# triggers:
+#   - id: monthly_rent_loader
+#     type: io.kestra.plugin.core.trigger.Schedule
+#     cron: "0 9 1 * *"
+#     inputs:
+#       data_type: rent
+#   - id: monthly_sale_loader
+#     type: io.kestra.plugin.core.trigger.Schedule
+#     cron: "0 10 1 * *"
+#     inputs:
+#       data_type: sale
