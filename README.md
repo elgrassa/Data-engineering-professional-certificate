@@ -15,6 +15,8 @@ https://polish-flats-ps.streamlit.app/
    Command:
    pip install dbt-bigquery
 ### 3. Kestra
+   Used to merge and aggregate 16 csv files from folder kestra/csv from [dataset](https://www.kaggle.com/datasets/krzysztofjamroz/apartment-prices-in-poland):
+![img_1.png](img_1.png)
    Purpose: Automate data pipelines for extracting, transforming, and loading (ETL) data into PostgreSQL and BigQuery.
 ### 4. BigQuery
    Purpose: Process large datasets and perform advanced queries, such as median and percentile calculations.
