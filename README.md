@@ -45,9 +45,7 @@ https://polish-flats-ps.streamlit.app/
    Open the app at http://localhost:8501.
 
 ### Data Sources
-   comparison_of_sale_and_rent_market_activity_by_city.csv
-   rent_market_activity_by_city_with_average_price_and_price_percentiles.csv
-   sale_market_activity_by_city_with_median_and_price_percentiles.csv
+![img_1.png](img_1.png)
 ###    Future Improvements
    Add dynamic filters for cities and price ranges.
    Implement time-series forecasting for price trends.
