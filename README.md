@@ -1,9 +1,7 @@
 ## Overview
-This project explores Poland's real estate market, focusing on rental and sales data across cities.
-The goal is to identify trends, such as price changes and market activity,
-using an interactive Streamlit dashboard for analysis and visualization.  
+This project examines the real estate market in Poland, with an emphasis on analyzing rental and sales data across various cities. The main objective is to uncover trends such as price fluctuations and market activities through the use of an interactive Streamlit dashboard.
 
-**Note:** For some cities with smaller real estate markets, such as Bydgoszcz, Gdynia, and Szczecin, the available data is limited. As a result, you may encounter missing or incomplete data, or differences in visualizations for these cities due to their smaller market activity.
+**Note:** In cities with smaller real estate markets, like Bydgoszcz, Gdynia, and Szczecin, data may be limited. Consequently, you might find gaps or less comprehensive visualizations due to reduced market activity in these areas.
 
 ## Accessible via
 https://polish-flats-ps.streamlit.app/
@@ -11,85 +9,140 @@ https://polish-flats-ps.streamlit.app/
 
 **Tools & Technologies**
 ### 1. Docker Compose & PostgreSQL
-**Purpose**: Set up a local database to store and manage real estate data.  
+**Purpose**: Establish a local database to handle and store real estate information.  
 **Command**:
    ```bash
    docker-compose -p kestra-postgres up -d
    ```
 
 ### 2. DBT (Data Build Tool)
-   Purpose: Transform raw data into structured formats for analysis.
+**Purpose**: Transform raw data into organized formats suitable for analysis.
    ```bash
    pip install dbt-bigquery
    ```
+
 ### 3. Kestra
-   Used to merge and aggregate 16 csv files from folder kestra/csv for rent and sale date 
-   from [dataset](https://www.kaggle.com/datasets/krzysztofjamroz/apartment-prices-in-poland):
+Used for merging and aggregating 16 CSV files from the folder kestra/csv regarding rental and sale data
+sourced from [dataset](https://www.kaggle.com/datasets/krzysztofjamroz/apartment-prices-in-poland):
 
 ![img_1.png](img_1.png)
 
 **Purpose:**
-Automate data pipelines for extracting, transforming, and loading (ETL) data into PostgreSQL and BigQuery.
-NOTE: The scheduler trigger is currently disabled due to lack of regularly updated datasets available in the public domain
+Automate data pipelines for the extraction, transformation, and loading (ETL) processes into PostgreSQL and BigQuery.  
+**Note**: The scheduler trigger is disabled at this time due to the lack of regularly updated datasets available publicly.
 
 ### 4. BigQuery
-**Purpose:** BigQuery serves as the platform for executing complex SQL queries for insights on rent and sale prices across cities.
+**Purpose:** This platform is utilized for executing intricate SQL queries to gain insights into rental and sales 
+prices across different cities.
 
 ### 5. Cloud DBT
 **Purpose:**
-Cloud DBT is used to build and test data transformation pipelines in the cloud, structuring raw data into clean formats with advanced calculations like percentiles and medians.
+Cloud DBT facilitates the building and testing of data transformation pipelines in the cloud, converting raw 
+data into clean formats and enabling complex calculations like percentiles and medians.
 
 **Challenges & Solution:**
-Due to synchronization issues during the trial period, which required frequent manual restarts of the Streamlit app, I decided to use pre-processed CSV files for stability. This allowed for smoother integration and ensured that the app could function effectively without relying on real-time data syncing. The transformed data is stored in CSV format and loaded into the Streamlit app for visualization, ensuring a stable and responsive experience.
+During the trial period, synchronization issues necessitated frequent manual restarts of the Streamlit app. 
+To address this, I opted for pre-processed CSV files to enhance stability. This approach allowed for smoother 
+integration and ensured the app could operate effectively without relying on real-time data synchronization.
+The transformed data, stored in CSV format, is loaded into the Streamlit app for visualization, ensuring a stable
+and responsive experience.
 
 ### 6. Streamlit
 **Purpose:**  
-Streamlit is used to create an interactive dashboard for visualizing data in real time. In this project, Streamlit serves as the front-end application that displays real estate market activity, price trends, and other key metrics, making it easy for users to explore and analyze the data.
+Streamlit is employed to develop an interactive dashboard that visualizes data in real time. 
+It displays the activity in the real estate market, price trends, and other essential metrics,
+making it easy for users to explore and analyze the data.
 
 **Key Features:**
-- **Interactive visualizations**: Create interactive charts, graphs, and tables to visualize trends in rental and sales data. Users can easily explore comparisons between sales and rental prices, as well as key percentiles like the median and 95th percentile.
-- **Real-time filtering**: Allows users to filter data based on cities, price ranges, or market types (Sale vs Rent).
-- **Multiple chart types**: Includes line charts for percentiles comparison, bar charts for price comparisons, and time series for price dynamics. Users can visualize data based on several parameters and make data-driven decisions.
-- **Dynamic updates**: The dashboard updates in real time as users change the filters, providing an interactive and engaging experience.
-- **Data-driven decisions**: The app empowers users to analyze the real estate market trends in Poland, guiding data-driven decisions on pricing and market activity.
+- **Interactive visualizations**: Develop interactive charts, graphs, and tables to illustrate trends in rental and sales data. Users can easily explore price comparisons and other key metrics, such as medians and percentiles.
+- **Real-time filtering**: This feature allows users to filter data based on specific cities, price ranges, and market types (Sale vs. Rent).
+- **Multiple chart types**: The dashboard will include line charts for percentile comparisons, bar charts for price comparisons, and time series charts for tracking price changes over time. Users can visualize data from various angles and make informed decisions.
+- **Dynamic updates**: The dashboard refreshes in real time as users modify filters, ensuring an interactive experience.
+- **Data-driven decisions**: This application empowers users to investigate real estate market trends in Poland, assisting in making informed decisions about pricing and market activities.
 
 ### 7. Pandas
-   Purpose: Manipulate and clean CSV data for analysis.
-   Features
-   Market Activity by City: View rental and sale prices, including percentiles and averages.
-   Rent vs. Sale Comparison: Analyze how rental and purchase prices differ across cities.
-   Market Dynamics: Track price changes over time.
+**Purpose**: To manipulate and clean CSV data for analysis.
+**Features**
+- Market Activity by City: Observing rental and sale prices, encompassing percentiles and averages.
+- Rent vs. Sale Comparison: Examining the differences in rental and purchase prices across cities.
+- Market Dynamics: Monitoring price changes over time.
 
-###   How to Run Locally
-Just open streamlit app https://polish-flats-ps.streamlit.app/
-or
-   Clone the repository:
-   git clone https://github.com/elgrassa/Data-engineering-professional-certificate.git
-   cd Data-engineering-professional-certificate
-   Start PostgreSQL and Kestra:
-   docker-compose -p kestra-postgres up -d
-   Install dependencies:
-   pip install -r requirements.txt
-   pip install dbt-bigquery
-   ... here is a messy one, didn't documented all steps had to update bashrce and export few variables
-   export data from dbtcloud to csv
-   Run the Streamlit app(stored in separate repo https://github.com/elgrassa/polish_flats)
-   streamlit run streamlit_app.py
-   Open the app at http://localhost:8501.
+### How to Run Locally
+To get started, you can either open the Streamlit app by using the following link:
+https://polish-flats-ps.streamlit.app/, or you can clone the repository with these commands:
+
+```bash
+git clone https://github.com/elgrassa/Data-engineering-professional-certificate.git
+cd Data-engineering-professional-certificate
+```
+
+Next, you'll need to start PostgreSQL and Kestra using Docker:
+
+```bash
+docker-compose -p kestra-postgres up -d
+```
+
+After that, make sure to install the required dependencies:
+
+```bash
+pip install -r requirements.txt
+pip install dbt-bigquery
+```
+
+**Important:** Don't forget to update your `.bashrc` and export the necessary variables as indicated in the execution 
+warnings. Some steps, particularly for bash configurations, might not be fully documented.
+
+### Create a DBT Cloud Project
+1. Sign in to DBT Cloud and access your dashboard.
+2. Click on "Create a New Project" and go through the setup steps.
+
+### Add Connection to BigQuery
+1. Navigate to Project > Settings > Connections in DBT Cloud.
+2. Choose Google BigQuery as your data warehouse.
+3. Upload the JSON key you obtained from Google Cloud for authentication. This step is crucial for securing the
+4. connection to your BigQuery project.
+
+**Specify the Project and Dataset:**
+- Input the BigQuery project ID and the dataset that DBT should use. Ensure that the correct project and dataset 
+- are selected to access your data appropriately.
+
+### Export Transformed Data as CSV
+After configuring your DBT Cloud project and the BigQuery connection, go to your DBT Cloud project.
+
+### Export Data
+Once you run the transformations, access the BigQuery Console. Navigate to the dataset where your transformed data resides.
+
+### Export to CSV
+To export the BigQuery tables to CSV, select the desired table and choose "Export" followed by
+"Export to Google Cloud Storage" or opt for "Download as CSV" directly.
+
+### Import CSV Data into Streamlit
+After exporting the transformed data as CSV files, load these files into the Streamlit app for visualization.
+Make sure to use the exported file names and update the paths in your code to reflect the latest exported CSVs.
+
+You can run the Streamlit app with the updated CSV files (stored in a separate repository):
+
+```bash
+streamlit run streamlit_app.py
+```
+Then open the app at http://localhost:8501.
 
 ### Data Sources
-The data used in this project is sourced from [Kaggle](https://www.kaggle.com/datasets/krzysztofjamroz/apartment-prices-in-poland)
-and consists of rental and sale price listings for Polish apartments.
+The data utilized in this project is from [Kaggle](https://www.kaggle.com/datasets/krzysztofjamroz/apartment-prices-in-poland), 
+featuring rental and sale price listings for apartments in Poland.
 
 ![img_1.png](img_1.png)
-**Note:** Some cities, such as Bydgoszcz, Gdynia, and Szczecin, have limited data available due to their smaller real estate markets. As a result, you may notice incomplete visualizations or gaps in the data for these locations.
 
-###    Future Improvements
-   Add dynamic filters for cities and price ranges.
-   Implement time-series forecasting for price trends.
-   Add charts/graphs for wife, requested to replace some tables 
+**Note:** Certain cities, like Bydgoszcz, Gdynia, and Szczecin, may have limited data due to their smaller real
+estate markets. Therefore, you might encounter incomplete visualizations or data gaps for these areas.
+
+### Future Improvements
+- Introduce dynamic filters for cities and price ranges.
+- Implement time-series forecasting for price trends.
+- Incorporate charts/graphs as requested, to replace some tables.
+
 ### Conclusion
-This dashboard simplifies the analysis of Poland's dynamic rental market.
-While it offers visualizations and insights, there are areas for improvement, particularly around
-the user interface and incorporating more dynamic filters. 
-Future updates may include integrating time-series forecasting and more sophisticated data filtering options to enhance usability.
+This dashboard offers a streamlined way to analyze the fluctuating rental market in Poland. While it provides
+valuable visual insights, improvements can be made, especially regarding the user interface and dynamic filtering 
+capabilities. Future enhancements may involve integrating time-series forecasts and advanced data filtering options
+to improve user experience.
