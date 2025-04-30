@@ -1,0 +1,1 @@
+{"_invocation_id": "edaf0292-4ba3-4220-b5cc-98ea44966f11", "linked": {"0": {"name": "source.polish_flats_dbt.polish_flats.apartments_sale", "type": "source", "succ": [2]}, "1": {"name": "source.polish_flats_dbt.polish_flats.apartments_rent", "type": "source", "succ": [2]}, "2": {"name": "model.polish_flats_dbt.aggregate_apartments", "type": "model"}}}

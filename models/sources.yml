@@ -1,8 +1,11 @@
 version: 2
+
 sources:
   - name: polish_flats
-    database: polish_flat
-    schema: public
+    database: polish_flat  # Or the real GCP project ID like `hazel-aquifer-458214-c4`
+    schema: polish_flats_data
     tables:
       - name: apartments_sale
+        description: "Cleaned apartment sale listings"
       - name: apartments_rent
+        description: "Cleaned apartment rent listings"
