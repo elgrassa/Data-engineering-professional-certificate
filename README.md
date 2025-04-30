@@ -50,7 +50,9 @@ Triggering DBT transformations
 
 ### 3.1 Data Ingestion – Stream
 
-This project does **not** use real-time streaming tools (like Kafka or Spark Streaming).  
+While real-time tools like Kafka or Spark Streaming aren't used, ingestion is automated using s[Kestra](https://kestra.io/),
+which acts as a batch orchestration engine. Each monthly CSV is treated as a distinct batch, and flows are parameterized by month and year. 
+This setup simulates a producer-consumer relationship and allows future migration to streaming pipelines if needed.
 Focus is on historical batch processing from monthly Kaggle datasets, as there is no realtime stats by flats purchase/rents
 
 ### 4. Data Warehouse - BigQuery
@@ -59,7 +61,10 @@ Data is stored and queried in Google BigQuery
 Transformed tables include:
 City-level rental and sales medians
 Monthly market activity aggregates
-Partitioning and clustering are not yet applied, but DBT models are structured and reusable for future optimization.
+Data is stored in BigQuery as a central warehouse. While partitioning is not yet applied, 
+the structure separates rent and sale datasets, enabling efficient filtering by city and month. 
+If updated datasets were available, partitioning by snapshot date or ingestion time would significantly
+improve query performance and cost efficiency.
 Bigquery usage evidence
 ![img_3.png](img_3.png)
 
