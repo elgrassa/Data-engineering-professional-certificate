@@ -48,6 +48,11 @@ Triggering DBT transformations
 
 **Note:** The automated scheduling is currently disabled, as the dataset isn't updated regularly.
 
+### 3.1 Data Ingestion – Stream
+
+This project does **not** use real-time streaming tools (like Kafka or Spark Streaming).  
+Focus is on historical batch processing from monthly Kaggle datasets, as there is no realtime stats by flats purchase/rents
+
 ### 4. Data Warehouse - BigQuery
 Used to run advanced SQL queries for gaining insight into price distributions and trends across different cities.
 Data is stored and queried in Google BigQuery
