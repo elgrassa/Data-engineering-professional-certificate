@@ -37,10 +37,15 @@ Kestra was used to automate the entire ETL process—from data extraction to tra
 Used to run advanced SQL queries for gaining insight into price distributions and trends across different cities.
 
 ### 5. Cloud DBT
-Streamlined the transformation of data in the cloud. This included calculating medians, percentiles, and other statistics used in the visualizations.
-Issue & Workaround:
-During testing, Streamlit occasionally failed due to sync delays from us claster of dbt-cloud. To ensure a smooth experience,
-I opted to use pre-processed CSVs instead of live database queries. This made the app more stable and responsive without streamlit manual restarts.
+DBT Cloud was used to clean, test, and structure the transformed data. After CSV files were 
+ingested into BigQuery, DBT Cloud executed modular SQL models to create curated tables with calculated 
+fields such as medians, percentiles, and trends. This helped ensure consistency and reusability 
+across all data transformations.
+
+**Issue & Workaround:**
+During testing, Streamlit occasionally failed due to sync delays from the US cluster of DBT Cloud.
+To avoid instability and manual restarts, I switched to using pre-exported CSVs for local analysis.
+This significantly improved performance and reliability.
 
 ### 6. Streamlit
 Serves as the frontend for the project, presenting the analyzed data through an intuitive and interactive dashboard.
@@ -110,7 +115,7 @@ BigQuery Job User
 BigQuery User
 
 ## Generate a JSON key and download it to your machine.
-**DON'T COMMIT IT, add to IGNORE**
+⚠️ Don't commit this file — add it to .gitignore.
 Upload this file into DBT Cloud.
 After authentication:
 Enter your BigQuery project ID.
