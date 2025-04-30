@@ -1,7 +1,11 @@
 ## Overview
 This project explores trends in Poland’s real estate market, with a particular focus on both rental and sales data across
 several cities. The goal is to identify market behaviors—such as price fluctuations and activity levels—through an 
-interactive dashboard built with Streamlit.
+interactive dashboard built with Streamlit:
+- Identify price fluctuations and percentiles across time and location.
+- Compare rent vs. sales activity.
+- Make informed property decisions using a visual dashboard.
+
 **Note:** Some smaller cities, including Bydgoszcz, Gdynia, and Szczecin, have less active real estate markets.
 As a result, the data coverage there may be more limited, and visualizations may not be as detailed.
 
@@ -13,28 +17,44 @@ You can try out the app here:
 **Tools & Technologies Used**
 ### 1. Docker Compose & PostgreSQL
 Set up a local PostgreSQL database to manage and store the raw and transformed real estate data.
+from 'kestra' folder execute:
 **Command**:
    ```bash
    docker-compose -p kestra-postgres up -d
    ```
 
-### 2. DBT (Data Build Tool)
-Used to clean and structure the raw data into formats suitable for deeper analysis.
-   ```bash
-   pip install dbt-bigquery
-   ```
+### ☁️ 2. Cloud Infrastructure
 
-### 3. Kestra
-Handled merging and processing of 16 CSV files (located in the kestra/csv directory), 
+This project uses several cloud tools:
+
+Google BigQuery: Hosts the transformed datasets for analysis.
+DBT Cloud: Performs modular transformations and testing on the datasets.
+Streamlit Cloud: Hosts the frontend dashboard for public access:
+👉 https://polish-flats-ps.streamlit.app/
+
+
+### 3. Data Ingestions - Kestra
 which contain rental and sale listings sourced from the [dataset](https://www.kaggle.com/datasets/krzysztofjamroz/apartment-prices-in-poland):
-To keep locally - all csv were imported to project files:
+Kestra is used to orchestrate ingestion from 16 monthly CSVs located in kestra/csv/.
+These are batch-ingested into PostgreSQL and BigQuery, using two Kestra flow YAMLs:
+build-dbt.yaml
+polish_flats_unified_loader.yaml
+Execution is parameterized by year and month.
+The pipeline includes:
+Extraction from CSVs
+Loading to PostgreSQL/BigQuery
+Triggering DBT transformations
 ![img_1.png](img_1.png)
 
-Kestra was used to automate the entire ETL process—from data extraction to transformation and loading into both PostgreSQL and BigQuery.
 **Note:** The automated scheduling is currently disabled, as the dataset isn't updated regularly.
 
-### 4. BigQuery
+### 4. Data Warehouse - BigQuery
 Used to run advanced SQL queries for gaining insight into price distributions and trends across different cities.
+Data is stored and queried in Google BigQuery
+Transformed tables include:
+City-level rental and sales medians
+Monthly market activity aggregates
+Partitioning and clustering are not yet applied, but DBT models are structured and reusable for future optimization.
 Bigquery usage evidence
 ![img_3.png](img_3.png)
 
@@ -43,6 +63,11 @@ DBT Cloud was used to clean, test, and structure the transformed data. After CSV
 ingested into BigQuery, DBT Cloud executed modular SQL models to create curated tables with calculated 
 fields such as medians, percentiles, and trends. This helped ensure consistency and reusability 
 across all data transformations.
+DBT Cloud is used to clean and model the ingested data.
+SQL models are located in the /models/staging/polish_flats directory.
+Example models:
+rent_price_dynamic_by_city.sql
+sale_market_activity_by_city_with_price_percentiles.sql
 
 **Issue & Workaround:**
 During testing, Streamlit occasionally failed due to sync delays from the US cluster of DBT Cloud.
@@ -65,10 +90,19 @@ City-by-city price analysis (mean, median, percentiles)
 Rental vs. sales price comparisons
 Time-based trend monitoring
 
-### How to Run Locally
-You’ve got two options to get started:
+## Dashboard
 Visit the live app at 👉 https://polish-flats-ps.streamlit.app
-Or, set it up on your own machine by:
+Key Features:
+
+📈 4+ interactive charts showing rental and sales activity by city
+🔍 Real-time filtering by city, price range, and transaction type
+🔄 View switching: bar, line, and time-series visualizations
+📁 CSV-based input for both local and cloud deployments
+📌 Column pinning and sorting for detailed table inspection
+The dashboard supports data-driven decision-making for apartment prices across Poland
+
+### How to Run Locally
+Set it up on your own machine/cloud services by:
 cloning the repo
 
 ```bash
