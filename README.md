@@ -81,7 +81,7 @@ This significantly improved performance and reliability.
 
 ### 6. Streamlit
 Serves as the frontend for the project, presenting the analyzed data through an intuitive and interactive dashboard.
-Developed in cloud codespaces:
+Developed in Github codespaces:
 ![img_4.png](img_4.png)
 **Features:**
 Interactive charts: Compare city-level rental and sales trends.
