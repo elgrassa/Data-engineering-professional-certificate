@@ -35,6 +35,8 @@ Kestra was used to automate the entire ETL process—from data extraction to tra
 
 ### 4. BigQuery
 Used to run advanced SQL queries for gaining insight into price distributions and trends across different cities.
+Bigquery usage evidence
+![img_3.png](img_3.png)
 
 ### 5. Cloud DBT
 DBT Cloud was used to clean, test, and structure the transformed data. After CSV files were 
